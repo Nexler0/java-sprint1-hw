@@ -2,13 +2,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class InputData {
 
     public static HashMap<Integer, ArrayList<String>> readMonthExpenses(String year) {
-        String pathFile = "";
-        String fileData = "";
+        String pathFile;
+        String fileData;
         ArrayList<String> dataList;
         HashMap<Integer, ArrayList<String>> listString = new HashMap<>();
         for (int i = 1; i <= 12; i++) {
@@ -37,7 +38,7 @@ public class InputData {
         fileData = readFileContentsOrNull(pathFile);
         if (fileData != null) {
             String[] dataLine = fileData.split("\n");
-            for (int j = 1; j < dataLine.length; j++) {
+            for (int j = 1; j < dataLine.length; j++) { //можно сокращенным сделать
                 String data = dataLine[j];
                 listString.add(data);
             }
@@ -49,7 +50,6 @@ public class InputData {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-//            System.out.println("Невозможно прочитать файл с месячным отчётом. Возможно, файл не находится в нужной директории.");
             return null;
         }
     }
