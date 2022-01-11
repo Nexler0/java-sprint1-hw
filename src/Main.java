@@ -18,6 +18,7 @@ public class Main {
                 continue;
             }
             if (command == 1) {
+
                 if (InsertYear.getYear() == 0) {
                     InputData.readMonthExpenses(InsertYear.insertYear());
                 } else {
@@ -27,7 +28,9 @@ public class Main {
                 for (int index = 0; index < monthData.size(); index++) {
                     monthData.get(index).monthDataProcessing();
                 }
+
             } else if (command == 2) {
+
                 if (InsertYear.getYear() == 0) {
                     InputData.readYearExpenses(
                             InsertYear.insertYear());
@@ -38,6 +41,7 @@ public class Main {
                 for (int index = 0; index < yearData.size(); index++) {
                     yearData.get(index).yearDataProcessing();
                 }
+
             } else if (command == 3) {  //add the function checking of having data in the lists
 
                 if (yearData.size() > 0 && monthData.size() > 0) {
@@ -73,7 +77,9 @@ public class Main {
                 } else {
                     System.out.println("Системная ошибка...");
                 }
+
             } else if (command == 4) {
+
                 if (monthData.size() > 0) {
                     System.out.println("Рассматриваемый год: " + InsertYear.getYear()
                             + "\nМаксимальная прибыль:");
@@ -89,7 +95,9 @@ public class Main {
                 } else {
                     System.out.println("Не введены данные по месяцам!");
                 }
+
             } else if (command == 5) {
+
                 if (yearData.size() > 0) {
                     System.out.println("Рассматриваемый год: " + InsertYear.getYear()
                             + "\nЧистая прибыль по месяцам: ");
@@ -110,12 +118,16 @@ public class Main {
                 } else {
                     System.out.println("Не введены годовые данные!");
                 }
+
             } else if (command == 6) {
+
                 InsertYear.yearIn = 0;
                 System.out.println("Год сброшен!");
                 yearData.clear();
                 monthData.clear();
-            } else if (command == 0) {
+
+            } else if (command == 0) { // delete password
+
                 System.out.println("Выход из программы"
                         + "\n------------------");
                 break;

@@ -20,7 +20,7 @@ public class MonthReport {
         for (int index = 1; index < monthListExpenses.size(); index++) {
             String[] value = monthListExpenses.get(index).split(",");
             for (int a = 0; a < value.length; a++) {
-                if (a == 0) keyList = value[a];
+                if (a == 0) keyList = value[a];                      // Brackets {} are always needed here?
                 if (a == 1) is_expense = (value[a].equals("TRUE"));
                 if (a == 2) valueList = Double.parseDouble(value[a]);
                 if (a == 3) quantity = Double.parseDouble(value[a]);
