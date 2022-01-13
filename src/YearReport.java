@@ -1,47 +1,80 @@
 import java.util.ArrayList;
 
 public class YearReport {
-    ArrayList<String> yearListExpenses;
-    double yearProfit;
-    double yearExpense;
+    ArrayList<String> yearData;
+    ArrayList<MonthInYear> yearMonths = new ArrayList<>();
 
-    YearReport(ArrayList<String> yearListExpenses) {
-        this.yearListExpenses = yearListExpenses;
+    YearReport(ArrayList<String> yearData) {
+        this.yearData = yearData;
     }
 
     void yearDataProcessing() {
-        boolean is_expense = true;
-        double valueList = 0;
-        for (String str : yearListExpenses) {
+        for (String str : yearData) {
             String[] value = str.split(",");
-            for (int a = 0; a < value.length; a++) {
-                if (a == 1) valueList = Double.parseDouble(value[a]);
-                if (a == 2) is_expense = (value[a].equals("true"));
-            }
-            if (!is_expense) {
-                yearProfit = valueList;
-            } else {
-                yearExpense = valueList;
-            }
+            yearMonths.add(new MonthInYear(
+                    Integer.parseInt(value[0]),
+                    Double.parseDouble(value[1]),
+                    Boolean.parseBoolean(value[2])));
         }
-        if (yearProfit != 0 && yearExpense != 0) {
+        if (yearMonths.size() > 0) {
             System.out.println("Данные получены");
         } else {
             System.out.println("Ошибка получения данных");
         }
+
     }
 
-    void getClearProfit() {
-        double clearProfit;
-        clearProfit = yearProfit - yearExpense;
-        System.out.println(clearProfit);
-    }
-
-    public double getYearExpense() {
-        return yearExpense;
+    public double getClearProfit() {
+        double yearProfit=0;
+        double yearExpense=0;
+        for (MonthInYear month : yearMonths){
+            if (!month.getIsExpense()){
+                yearProfit += month.getValue();
+            } else {
+                yearExpense += month.getValue();
+            }
+        }
+        return yearProfit - yearExpense;
     }
 
     public double getYearProfit() {
+        double yearProfit=0;
+        for (MonthInYear month : yearMonths){
+            if (!month.getIsExpense()){
+                yearProfit += month.getValue();
+            }
+        }
         return yearProfit;
+    }
+
+    public double getYearExpense() {
+        double yearExpense=0;
+        for (MonthInYear month : yearMonths){
+            if (month.getIsExpense()){
+                yearExpense += month.getValue();
+            }
+        }
+        return yearExpense;
+    }
+
+}
+
+class MonthInYear {
+    private int month;
+    private double value;
+    private boolean isExpense;
+
+    MonthInYear(int month, double value, boolean isExpense) {
+        this.month = month;
+        this.value = value;
+        this.isExpense = isExpense;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public boolean getIsExpense(){
+        return isExpense;
     }
 }

@@ -1,0 +1,11 @@
+month,amount,is_expense
+01,15930150,false
+01,30000,true
+02,81000,false
+02,14000,true
+03,900000,true
+03,243000,false
+09,81000,false
+09,14000,true
+11,900000,true
+11,243000,false

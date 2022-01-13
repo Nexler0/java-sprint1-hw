@@ -1,87 +1,107 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MonthReport {
-    ArrayList<String> monthListExpenses;
-    HashMap<String, Double> monthProfit = new HashMap<>();
-    HashMap<String, Double> monthExpense = new HashMap<>();
-    double monthSumProfit;
-    double monthSumExpense;
+    ArrayList<String> monthData;
+    ArrayList<Item> monthItems = new ArrayList<>();
 
-    MonthReport(ArrayList<String> monthListExpenses) {
-        this.monthListExpenses = monthListExpenses;
+    MonthReport(ArrayList<String> monthData) {
+        this.monthData = monthData;
     }
 
     void monthDataProcessing() {
-        String keyList = "";
-        boolean is_expense = true;
-        double valueList = 0;
-        double quantity = 0;
-        for (int index = 1; index < monthListExpenses.size(); index++) {
-            String[] value = monthListExpenses.get(index).split(",");
-            for (int a = 0; a < value.length; a++) {
-                if (a == 0) keyList = value[a];                      // Brackets {} are always needed here?
-                if (a == 1) is_expense = (value[a].equals("TRUE"));
-                if (a == 2) valueList = Double.parseDouble(value[a]);
-                if (a == 3) quantity = Double.parseDouble(value[a]);
-            }
-            if (!is_expense) {
-                monthProfit.put(keyList, valueList * quantity);
-            } else {
-                monthExpense.put(keyList, valueList * quantity);
-            }
+        for (int index = 1; index < monthData.size(); index++) {
+            String[] value = monthData.get(index).split(",");
+            monthItems.add(new Item(value[0],
+                    Boolean.parseBoolean(value[1]),
+                    Double.parseDouble(value[2]),
+                    Integer.parseInt(value[3])));
         }
-        if (monthProfit.size() > 0 && monthExpense.size() > 0) {
+        if (monthData.size() > 0) {
             System.out.println("Данные получены");
         } else {
             System.out.println("Ошибка получения данных");
         }
-        for (String key : monthProfit.keySet()) {
-            monthSumProfit += monthProfit.get(key);
-        }
-        for (String key : monthExpense.keySet()) {
-            monthSumExpense += monthExpense.get(key);
-        }
     }
 
     void getMaxProfitOnMonth() {
-        double maxVal = 0;
-        double val;
+        double maxProfit = 0;
         String index = "";
-        for (String key : monthProfit.keySet()) {
-            val = monthProfit.get(key);
-            if (maxVal < val) {
-                maxVal = val;
-                index = key;
+        for (Item staff : monthItems){
+            if (!staff.getFlag()){
+                if (maxProfit < staff.getPrice()*staff.getQuantity()){
+                    maxProfit = staff.getPrice()*staff.getQuantity();
+                    index = staff.getName();
+                }
             }
         }
-        System.out.println(index + " - " + maxVal);
+        System.out.println(index + " - " + maxProfit);
     }
 
     void getMaxExpenseOnMonth() {
-        double maxVal = 0;
-        double val;
+        double maxExpense = 0;
         String index = "";
-        for (String key : monthExpense.keySet()) {
-            val = monthExpense.get(key);
-            if (maxVal < val) {
-                maxVal = val;
-                index = key;
+        for (Item staff : monthItems){
+            if (staff.getFlag()){
+                if (maxExpense < staff.getPrice()*staff.getQuantity()){
+                    maxExpense = staff.getPrice()*staff.getQuantity();
+                    index = staff.getName();
+                }
             }
         }
-        System.out.println(index + " - " + maxVal);
-    }
-
-    public double getMonthSumExpense() {
-        return monthSumExpense;
+        System.out.println(index + " - " + maxExpense);
     }
 
     public double getMonthSumProfit() {
-        return monthSumProfit;
+        double maxSum = 0;
+        for (Item staff : monthItems){
+            if (!staff.getFlag()){
+                maxSum += staff.getPrice() * staff.getQuantity();
+            }
+        }
+        return maxSum;
     }
+
+    public double getMonthSumExpense() {
+        double maxSum = 0;
+        for (Item staff : monthItems){
+            if (staff.getFlag()){
+                maxSum += staff.getPrice() * staff.getQuantity();
+            }
+        }
+        return maxSum;
+    }
+
 }
 
+class Item {
+    private  String name;
+    private boolean isExpense;
+    private double price;
+    private int quantity;
 
+    Item(String name, boolean isExpense, double price, int quantity) {
+        this.name = name;
+        this.isExpense = isExpense;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean getFlag(){
+        return isExpense;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+}
 
 
 
