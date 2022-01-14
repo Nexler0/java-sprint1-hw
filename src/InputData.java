@@ -32,31 +32,19 @@ public class InputData {
         return monthData;
     }
 
-    public static HashMap<Integer, YearReport> readYearExpenses(String year) {
+    public static ArrayList<ArrayList<String>> readYearExpenses(String year) {
         String pathFile = "resources/y." + year + ".csv";
         String fileData;
-        ArrayList<String> listString = new ArrayList<>();
-        HashMap<Integer, YearReport> yearData = new HashMap<>();
+        ArrayList<String> stringDataAtMonth = new ArrayList<>();
+        ArrayList<ArrayList<String>> yearData = new ArrayList<>();
         fileData = readFileContentsOrNull(pathFile);
         if (fileData != null) {
             String[] dataLine = fileData.split("\n");
-            int count = 1;
-            String[] num;
             for (int j = 1; j < dataLine.length; j++) {
-
                 String data = dataLine[j];
-                listString.add(data);
-
-                for (String str : listString){
-                    num = str.split(",");
-                    count = Integer.parseInt(num[0]);
-                }
-                if (j % 2.0 == 0) {
-                    yearData.put(count, new YearReport(listString));
-                    count++;
-                    listString = new ArrayList<>();
-                }
+                stringDataAtMonth.add(data);
             }
+            yearData.add(stringDataAtMonth);
         } else {
             System.out.println("Ошибка чтения файла");
         }

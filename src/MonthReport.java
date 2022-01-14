@@ -2,15 +2,16 @@ import java.util.ArrayList;
 
 public class MonthReport {
     ArrayList<String> monthData;
-    ArrayList<Item> monthItems = new ArrayList<>();
+    ArrayList<Item> monthItems;
 
     MonthReport(ArrayList<String> monthData) {
         this.monthData = monthData;
+        monthItems = new ArrayList<>();
     }
 
-    void monthDataProcessing() {
-        for (int index = 1; index < monthData.size(); index++) {
-            String[] value = monthData.get(index).split(",");
+    void processingMonthData() {
+        for (int productName = 1; productName < monthData.size(); productName++) {
+            String[] value = monthData.get(productName).split(",");
             monthItems.add(new Item(value[0],
                     Boolean.parseBoolean(value[1]),
                     Double.parseDouble(value[2]),
@@ -25,37 +26,37 @@ public class MonthReport {
 
     void getMaxProfitOnMonth() {
         double maxProfit = 0;
-        String index = "";
-        for (Item staff : monthItems){
-            if (!staff.getFlag()){
-                if (maxProfit < staff.getPrice()*staff.getQuantity()){
-                    maxProfit = staff.getPrice()*staff.getQuantity();
-                    index = staff.getName();
+        String productName = "";
+        for (Item product : monthItems) {
+            if (!product.getFlag()) {
+                if (maxProfit < product.getPrice() * product.getQuantity()) {
+                    maxProfit = product.getPrice() * product.getQuantity();
+                    productName = product.getName();
                 }
             }
         }
-        System.out.println(index + " - " + maxProfit);
+        System.out.println(productName + " - " + maxProfit);
     }
 
     void getMaxExpenseOnMonth() {
         double maxExpense = 0;
-        String index = "";
-        for (Item staff : monthItems){
-            if (staff.getFlag()){
-                if (maxExpense < staff.getPrice()*staff.getQuantity()){
-                    maxExpense = staff.getPrice()*staff.getQuantity();
-                    index = staff.getName();
+        String productName = "";
+        for (Item product : monthItems) {
+            if (product.getFlag()) {
+                if (maxExpense < product.getPrice() * product.getQuantity()) {
+                    maxExpense = product.getPrice() * product.getQuantity();
+                    productName = product.getName();
                 }
             }
         }
-        System.out.println(index + " - " + maxExpense);
+        System.out.println(productName + " - " + maxExpense);
     }
 
     public double getMonthSumProfit() {
         double maxSum = 0;
-        for (Item staff : monthItems){
-            if (!staff.getFlag()){
-                maxSum += staff.getPrice() * staff.getQuantity();
+        for (Item product : monthItems) {
+            if (!product.getFlag()) {
+                maxSum += product.getPrice() * product.getQuantity();
             }
         }
         return maxSum;
@@ -63,9 +64,9 @@ public class MonthReport {
 
     public double getMonthSumExpense() {
         double maxSum = 0;
-        for (Item staff : monthItems){
-            if (staff.getFlag()){
-                maxSum += staff.getPrice() * staff.getQuantity();
+        for (Item product : monthItems) {
+            if (product.getFlag()) {
+                maxSum += product.getPrice() * product.getQuantity();
             }
         }
         return maxSum;
@@ -74,7 +75,7 @@ public class MonthReport {
 }
 
 class Item {
-    private  String name;
+    private String name;
     private boolean isExpense;
     private double price;
     private int quantity;
@@ -90,7 +91,7 @@ class Item {
         return name;
     }
 
-    public boolean getFlag(){
+    public boolean getFlag() {
         return isExpense;
     }
 

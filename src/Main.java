@@ -2,14 +2,15 @@ import java.util.*;
 
 public class Main {
     static HashMap<Integer, MonthReport> monthData;
-    static HashMap<Integer, YearReport> yearData;
+    static ArrayList<ArrayList<String>> yearData;
+    static YearReport yearReport;
 
     public static void main(String[] args) {
         monthData = new HashMap<>();
-        yearData = new HashMap<>();
+        yearData = new ArrayList<>();
         int command;
         while (true) {
-            menu();
+            printMenu();
             Scanner inputMenu = new Scanner(System.in);
             try {
                 command = inputMenu.nextInt();
@@ -18,108 +19,18 @@ public class Main {
                 continue;
             }
             if (command == 1) {
-
-                if (ConsideredYear.getYear() == 0) {
-                    monthData = InputData.readMonthExpenses(ConsideredYear.enterYear());
-                } else {
-                    monthData = InputData.readMonthExpenses(String.valueOf(ConsideredYear.getYear()));
-                }
-                for (int index : monthData.keySet()) {
-                    monthData.get(index).monthDataProcessing();
-                }
-
+                readMonthData();
             } else if (command == 2) {
-
-                if (ConsideredYear.getYear() == 0) {
-                    yearData = InputData.readYearExpenses(ConsideredYear.enterYear());
-                } else {
-                    yearData = InputData.readYearExpenses(String.valueOf(ConsideredYear.getYear()));
-                }
-                for (int index : yearData.keySet()) {
-                    yearData.get(index).yearDataProcessing();
-                }
-
-            } else if (command == 3) {  //add the function checking of having data in the lists
-
-                if (yearData.size() > 0 && monthData.size() > 0) {
-                    System.out.println("Рассматриваемый год: " + ConsideredYear.getYear()
-                            + "\nСравнение месячной и годовой прибыли:");
-                    for (int index : monthData.keySet()) {
-                        System.out.println(InputData.getNameMonth(index - 1));
-                        System.out.print(" Прибыль: ");
-                        double year = yearData.get(index).getYearProfit();
-                        double month = monthData.get(index).getMonthSumProfit();
-                        if (month == year) {
-                            System.out.println(monthData.get(index).getMonthSumProfit()
-                                    + " - " + yearData.get(index).getYearProfit());
-                        } else {
-                            System.out.println(monthData.get(index).getMonthSumProfit()
-                                    + " - " + yearData.get(index).getYearProfit() + " -Ошибка ");
-                        }
-                        System.out.print(" Расход: ");
-                        year = yearData.get(index).getYearExpense();
-                        month = monthData.get(index).getMonthSumExpense();
-                        if (month == year) {
-                            System.out.println(monthData.get(index).getMonthSumExpense()
-                                    + " - " + yearData.get(index).getYearExpense());
-                        } else {
-                            System.out.println(monthData.get(index).getMonthSumExpense()
-                                    + " - " + yearData.get(index).getYearExpense() + " -Ошибка ");
-                        }
-                    }
-                } else if (monthData.size() == 0) {
-                    System.out.println("Не введены данные по месяцам!");
-                } else {
-                    System.out.println("Не введены годовые данные!");
-                }
-
+                readYearData();
+            } else if (command == 3) {
+                comparisonYearAndMonthReports();
             } else if (command == 4) {
-
-                if (monthData.size() > 0) {
-                    System.out.println("Рассматриваемый год: " + ConsideredYear.getYear());
-                    for (int index : monthData.keySet()) {
-                        System.out.println(InputData.getNameMonth(index - 1));
-                        System.out.print("Максимальная пибыль: ");
-                        monthData.get(index).getMaxProfitOnMonth();
-                        System.out.print("Максимальная трата: ");
-                        monthData.get(index).getMaxExpenseOnMonth();
-                    }
-                } else {
-                    System.out.println("Не введены данные по месяцам!");
-                }
-
+                printMonthsReport();
             } else if (command == 5) {
-
-                if (yearData.size() > 0) {
-                    System.out.println("Рассматриваемый год: " + ConsideredYear.getYear()
-                            + "\nЧистая прибыль по месяцам: ");
-                    for (int index : yearData.keySet()) {
-                        System.out.print(InputData.getNameMonth(index - 1) + " - ");
-                        System.out.println(yearData.get(index).getClearProfit());
-                    }
-                    double printProfit = 0;
-                    double printExpense = 0;
-                    double count = 0;
-                    for (int index : yearData.keySet()) {
-                        printProfit += yearData.get(index).getYearProfit();
-                        count = yearData.size();
-                        printExpense += yearData.get(index).getYearExpense();
-                    }
-                    System.out.println("Средняя прибыль за год: " + printProfit / count);
-                    System.out.println("Средние расходы за год: " + printExpense / count);
-                } else {
-                    System.out.println("Не введены годовые данные!");
-                }
-
+                printYearReport();
             } else if (command == 6) {
-
-                ConsideredYear.yearIn = 0;
-                System.out.println("Год сброшен!");
-                yearData.clear();
-                monthData.clear();
-
-            } else if (command == 0) { // delete password
-
+                removeConsideredYear();
+            } else if (command == 0) {
                 System.out.println("Выход из программы"
                         + "\n------------------");
                 break;
@@ -127,7 +38,98 @@ public class Main {
         }
     }
 
-    static void menu() {
+    static void readMonthData() {
+        if (ConsideredYear.getYear() == 0) {
+            monthData = InputData.readMonthExpenses(ConsideredYear.enterYear());
+        } else {
+            monthData = InputData.readMonthExpenses(String.valueOf(ConsideredYear.getYear()));
+        }
+        for (int index : monthData.keySet()) {
+            monthData.get(index).processingMonthData();
+        }
+    }
+
+    static void readYearData() {
+        if (ConsideredYear.getYear() == 0) {
+            yearData = InputData.readYearExpenses(ConsideredYear.enterYear());
+        } else {
+            yearData = InputData.readYearExpenses(String.valueOf(ConsideredYear.getYear()));
+        }
+        for (ArrayList<String> data : yearData) {
+            yearReport = new YearReport(data);
+            yearReport.processingYearData();
+        }
+    }
+
+    static void printMonthsReport() {
+        if (monthData.size() > 0) {
+            System.out.println("Рассматриваемый год: " + ConsideredYear.getYear());
+            for (int index : monthData.keySet()) {
+                System.out.println(InputData.getNameMonth(index - 1));
+                System.out.print("Максимальная пибыль: ");
+                monthData.get(index).getMaxProfitOnMonth();
+                System.out.print("Максимальная трата: ");
+                monthData.get(index).getMaxExpenseOnMonth();
+            }
+        } else {
+            System.out.println("Не введены данные по месяцам!");
+        }
+    }
+
+    static void printYearReport() {
+        if (yearData.size() > 0) {
+            System.out.println("Рассматриваемый год: " + ConsideredYear.getYear()
+                    + "\nЧистая прибыль по месяцам: ");
+            yearReport.getClearProfit();
+            System.out.println("Средняя прибыль за год: "
+                    + yearReport.getYearProfit() / yearReport.getMonthCount());
+            System.out.println("Средние расходы за год: "
+                    + yearReport.getYearExpense() / yearReport.getMonthCount());
+        } else {
+            System.out.println("Не введены годовые данные!");
+        }
+    }
+
+    static void comparisonYearAndMonthReports() {
+        int indexMonthsInYearReport = 0;
+        if (yearData.size() > 0 && monthData.size() > 0) {
+            System.out.println("Рассматриваемый год: " + ConsideredYear.getYear()
+                    + "\nСравнение месячной и годовой прибыли:");
+            for (int index : monthData.keySet()) {
+                System.out.println(InputData.getNameMonth(index - 1));
+                System.out.print(" Прибыль: ");
+                double monthProfitInYearReport = yearReport.getMonthsProfit(indexMonthsInYearReport);
+                double monthProfitInMonthReport = monthData.get(index).getMonthSumProfit();
+                if (monthProfitInMonthReport == monthProfitInYearReport) {
+                    System.out.println(monthProfitInMonthReport + " - " + monthProfitInYearReport);
+                } else {
+                    System.out.println(monthProfitInMonthReport + " - " + monthProfitInYearReport + " -Ошибка ");
+                }
+                System.out.print(" Расход: ");
+                double monthExpenseInYearReport = yearReport.getMonthsExpense(indexMonthsInYearReport);
+                double monthExpenseInMonthReport = monthData.get(index).getMonthSumExpense();
+                if (monthExpenseInMonthReport == monthExpenseInYearReport) {
+                    System.out.println(monthExpenseInMonthReport + " - " + monthExpenseInYearReport);
+                } else {
+                    System.out.println(monthExpenseInMonthReport + " - " + monthExpenseInYearReport + " -Ошибка ");
+                }
+                indexMonthsInYearReport += 2;
+            }
+        } else if (monthData.size() == 0) {
+            System.out.println("Не введены данные по месяцам!");
+        } else {
+            System.out.println("Не введены годовые данные!");
+        }
+    }
+
+    static void removeConsideredYear() {
+        ConsideredYear.yearIn = 0;
+        System.out.println("Год сброшен!");
+        yearData.clear();
+        monthData.clear();
+    }
+
+    static void printMenu() {
         System.out.println("""
                                         
                 Выберете действие:
