@@ -10,8 +10,8 @@ public class MonthReport {
     }
 
     void processingMonthData() {
-        for (int productName = 1; productName < monthData.size(); productName++) {
-            String[] value = monthData.get(productName).split(",");
+        for (int index = 1; index < monthData.size(); index++) {
+            String[] value = monthData.get(index).split(",");
             monthItems.add(new Item(value[0],
                     Boolean.parseBoolean(value[1]),
                     Double.parseDouble(value[2]),
